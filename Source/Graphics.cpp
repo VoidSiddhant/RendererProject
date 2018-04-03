@@ -148,7 +148,7 @@ namespace EngineSpace
 		shaderFlags = D3D10_SHADER_DEBUG | D3D10_SHADER_SKIP_OPTIMIZATION;
 #endif
 	
-		HRESULT hr = D3DX11CreateEffectFromFile(L"D:/EngineProject/Renderer Test/x64/Debug/Color.cso", shaderFlags, lp_d3dDevice, &m_effect);
+		HRESULT hr = D3DX11CreateEffectFromFile(L"x64/Debug/Color.cso", shaderFlags, lp_d3dDevice, &m_effect);
 
 		m_tech = m_effect->GetTechniqueByName("ColorTech");
 		

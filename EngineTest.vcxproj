@@ -70,8 +70,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>D:\EngineProject\Renderer Test\FX11\Bin\x64\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>D:\EngineProject\Renderer Test\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\FX11\Bin\x64\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
