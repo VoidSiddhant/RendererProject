@@ -5,6 +5,7 @@
 
 //Windows Procedure Function Prototype
 LRESULT CALLBACK WndProc(HWND,UINT, WPARAM, LPARAM);
+
 namespace EngineSpace
 {
 	//Prototyping classes
@@ -13,7 +14,6 @@ namespace EngineSpace
 	class Camera;
 	class Input;
 	
-
 	class Core
 	{
 
@@ -22,7 +22,13 @@ namespace EngineSpace
 		void Init();
 		int Run();
 		void ShutDown();
-		void UpdateFrame();
+		void Update();
+		//Startup Attachments
+		virtual void Start() = 0;
+
+		//Update Attachment
+		virtual void Update(float dt) = 0;
+
 
 		//Accessor methods
 		HWND GetHWND()  {

@@ -6,36 +6,40 @@ namespace EngineSpace
 {
 	Camera::Camera()
 	{
-		XMStoreFloat4x4(&mView, XMMatrixIdentity());
-		XMStoreFloat4x4(&mProjection, XMMatrixIdentity());
-		XMStoreFloat4x4(&mWorld, XMMatrixIdentity());
-
-		mNearZ = 1.0f;
-		mFarZ = 1000.0f;
-		mFovY = 0.25f * MATHF_PI;
+		//Set Matrices
+		XMStoreFloat4x4(&m_view, XMMatrixIdentity());
+		XMStoreFloat4x4(&m_projection, XMMatrixIdentity());
+		//Set View Properties
+		m_position = XMFLOAT3(0.0f,0.0f,0.0f);
+		m_up = XMFLOAT3(0.0f, 1.0f, 0.0f);;
+		m_target = XMFLOAT3(0.0f, 0.0f, 0.0f);;
+		//Set Projection Properties
+		m_nearZ = 1.0f;
+		m_farZ = 1000.0f;
+		m_fov = 0.25f * MATHF_PI;
+		m_aspect = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
 	}
 
 	Camera::Camera(const XMFLOAT3& position, const XMFLOAT3& target, const XMFLOAT3& up)
 	{
-		XMStoreFloat4x4(&mView, XMMatrixIdentity());
-		XMStoreFloat4x4(&mProjection, XMMatrixIdentity());
-		XMStoreFloat4x4(&mWorld, XMMatrixIdentity());
-
-		mPosition = XMLoadFloat3(&position);
-		mUp = XMLoadFloat3(&up);
-		mLook = XMLoadFloat3(&target);
-
-		mNearZ = 1.0f;
-		mFarZ = 1000.0f;
-
-		mFovY = 0.25f * MATHF_PI;
+		//Set Matrices
+		XMStoreFloat4x4(&m_projection, XMMatrixIdentity());
+		XMStoreFloat4x4(&m_view, XMMatrixIdentity());
+		//Set View Properties
+		m_position = position;
+		m_up = up;
+		m_target = target;
+		//Set Projection Properties
+		m_nearZ = 1.0f;
+		m_farZ = 1000.0f;
+		m_fov = 0.25f * MATHF_PI;
+		m_aspect = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
 	}
 
 
 	void Camera::SetPosition(const XMFLOAT3& posVector)
 	{
-		mPosition = XMLoadFloat3(&posVector);
-		
+		m_position = posVector;
 	}
 
 	void Camera::SetRotation(const XMFLOAT3& value)
@@ -45,27 +49,47 @@ namespace EngineSpace
 
 	void Camera::SetUpDirection(const DirectX::XMFLOAT3& value)
 	{
-		mUp = XMLoadFloat3(&value);
+		m_up = value;
 	}
 
-	void Camera::SetTarget(const DirectX::XMFLOAT3& value)
+	void Camera::SetLookDirection(const DirectX::XMFLOAT3& value)
 	{
-		mLook = XMLoadFloat3(&value);
+		m_target = value;
 	}
 
-	void Camera::SetFoV(const float& fov)
+	void Camera::SetFoV(float value)
 	{
-		mFovY = fov;
+		m_fov = value;
 	}
 
-	void Camera::Update()
+	void Camera::SetAspect(float ratio)
+	{
+		m_aspect = ratio;
+	}
+
+	void Camera::SetNearPlane(float zDistance)
+	{
+		m_nearZ = zDistance;
+	}
+
+	void Camera::SetFarPlane(float fDistance)
+	{
+		m_farZ = fDistance;
+	}
+
+	void Camera::UpdateProjection()
+	{
+		//Update the Projection Matrix
+		XMMATRIX projXMMat = XMMatrixPerspectiveFovLH(m_fov, m_aspect, m_nearZ, m_farZ);
+		XMStoreFloat4x4(&m_projection, projXMMat);
+
+	}
+
+	void Camera::UpdateView()
 	{
 		//Update the View Matrix
-		XMMATRIX viewXMMat =  XMMatrixLookAtLH(mPosition, mLook, mUp);
-		XMStoreFloat4x4(&mView, viewXMMat);
-		//Update the Projection Matrix
-		XMMATRIX projXMMat = XMMatrixPerspectiveFovLH(mFovY, (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, mNearZ, mFarZ);
-		XMStoreFloat4x4(&mProjection, projXMMat);
+		XMMATRIX viewXMMat =  XMMatrixLookAtLH(XMLoadFloat3(&m_position), XMLoadFloat3(&m_target), XMLoadFloat3(&m_up));
+		XMStoreFloat4x4(&m_view, viewXMMat);
 	}
 
 	Camera::~Camera()

@@ -28,6 +28,19 @@ namespace EngineSpace
 		this->InitGraphics();
 
 		m_input = new Input();
+
+		//Start Timer
+		m_timer = new Timer();
+		//Set Up Default Camera
+		m_camera = new Camera(XMFLOAT3{ 0.0f,0.0f,-5.0f }, XMFLOAT3{ 0.0f,0.0f,0.0f }, XMFLOAT3{ 0.0f,1.0f,0.0f });
+		m_camera->UpdateView();
+		m_camera->UpdateProjection();
+
+		//Set Default render input layout and shaders
+		m_graphics->BuildFX();
+		m_graphics->CreateInputLayout();
+
+		Start();
 	}
 
 	void Core::InitWindow()
@@ -41,12 +54,12 @@ namespace EngineSpace
 		wc.hbrBackground = HBRUSH(COLOR_WINDOW);
 		wc.hIcon = LoadIcon(0, IDI_APPLICATION);
 		wc.lpszMenuName = 0;
-		wc.lpszClassName = L"NewBegining";
+		wc.lpszClassName = m_title;
 
 
 		RegisterClass(&wc);
 
-		m_hwnd = CreateWindow(L"NewBegining", m_title, WS_OVERLAPPEDWINDOW, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, m_hInstance, NULL);
+		m_hwnd = CreateWindow(m_title, m_title, WS_OVERLAPPEDWINDOW, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, m_hInstance, NULL);
 		if (!m_hwnd)
 		{
 			MessageBox(m_hwnd, L"Window Could Not Be Created", L"Error!!!", MB_OK);
@@ -67,13 +80,6 @@ namespace EngineSpace
 
 		//Initialise the msg structure
 		ZeroMemory(&msg, sizeof(MSG));
-		m_timer = new Timer();
-		m_camera = new Camera(XMFLOAT3{ 0.0f,0.0f,-5.0f }, XMFLOAT3{ 0.0f,0.0f,0.0f }, XMFLOAT3{ 0.0f,1.0f,0.0f });
-		//Shape Demo
-		EngineSpace::GameObject boxObject = EngineSpace::PrimitiveGeometry::CreateBox();
-		//Set Default render input layout and shaders
-		m_graphics->BuildFX();
-		m_graphics->CreateInputLayout();
 
 		while (!exitAppCondition)
 		{
@@ -92,22 +98,24 @@ namespace EngineSpace
 			{
 				//m_timer->FPS();
 				m_timer->Tick();
-				this->UpdateFrame();
+				Update();
 			}
 		}
 		
 		return (int)msg.wParam;
 	}
 
-	void Core::UpdateFrame()
+
+	void Core::Update()
 	{
 		// Check for User Input
-		if(m_input->GetKeyDown(VK_ESCAPE))
+		if (m_input->GetKeyDown(VK_ESCAPE))
 		{
 			MessageBox(m_hwnd, L"Hello", L"Caption", MB_OK);
 			exitAppCondition = true;
 		}
-		m_camera->Update();
+		//Call Application Update
+		Update(m_timer->GetDeltaTime());
 		// Update all the draw calls
 		m_graphics->Draw();
 	}
@@ -118,10 +126,11 @@ namespace EngineSpace
 		DestroyWindow(m_hwnd);
 
 		// Remove the App instance
-		UnregisterClass(L"NewBegining", m_hInstance);
+		UnregisterClass(m_title, m_hInstance);
 		m_hInstance = NULL;
 
 		//Release Pointer handler to the engine object
+		//delete gp_Core;
 		gp_Core = NULL;
 	}
 

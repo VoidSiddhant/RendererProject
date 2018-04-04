@@ -1,21 +1,42 @@
-#include "../Include/Core.h"
-#include "../Include/PrimitiveGeometry.h"
+#include "Core.h"
+#include "PrimitiveGeometry.h"
+
+class Application : public EngineSpace::Core
+{
+	public:
+	
+		Application(LPCWSTR windowTitle, HINSTANCE hInstance) : Core(windowTitle,hInstance)
+		{
+
+		}
+
+		void Start()
+		{
+			//Shape Demo
+			EngineSpace::GameObject boxObject = EngineSpace::PrimitiveGeometry::CreateBox();
+		}
+
+		void Update(float dt)
+		{
+
+		}
+
+		virtual ~Application()
+		{
+
+		}
+
+};
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR pCmdLine, int nCmdShow)
 {
-	EngineSpace::Core* engineObj = new EngineSpace::Core(L"NewBegining",hInstance);
+	Application* app = new Application(L"BoxDemo", hInstance);
 
-	if (!engineObj)
-		return 0;
+	app->Init();
+	app->Run();
+	app->ShutDown();
 
-	//Initialize and run Engine
-	engineObj->Init();
-	engineObj->Run();
-
-	engineObj->ShutDown();
-	delete engineObj;
-	engineObj = 0;
-
+	delete app;
 	return 0;
 
 }
