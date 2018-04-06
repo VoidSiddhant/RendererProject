@@ -13,7 +13,7 @@ namespace EngineSpace
 		~PrimitiveGeometry();
 
 		static GameObject CreateBox();
-
+		static GameObject::Mesh CreateGrid();
 	
 	private:
 

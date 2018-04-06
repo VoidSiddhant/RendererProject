@@ -1,6 +1,6 @@
 #include "PrimitiveGeometry.h"
 #include"BufferManager.h"
-
+using namespace DirectX;
 namespace EngineSpace
 {
 	PrimitiveGeometry::PrimitiveGeometry()
@@ -18,6 +18,8 @@ namespace EngineSpace
 		GameObject object;
 		object.mesh.vertexData.resize(8);
 		object.mesh.indexData.resize(36);
+
+		
 
 		//Fill Unity Length Cube
 		object.mesh.vertexData = {
@@ -68,4 +70,6 @@ namespace EngineSpace
 		
 		return object;
 	}
+	
+
 }

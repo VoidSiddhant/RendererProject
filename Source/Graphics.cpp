@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "Graphics.h"
 #include "Core.h"
 #include "BufferManager.h"
@@ -8,6 +9,10 @@ namespace EngineSpace
 {
 	Graphics::Graphics()
 	{
+		logFile = std::fopen("EngineStartupLog.txt", "w");
+		std::fputs("Graphics Init\n", logFile);
+		std::fclose(logFile);
+
 		lp_d3dDevice = 0;
 		lp_d3dContext = 0;
 		renderTargetView = 0;
@@ -17,7 +22,21 @@ namespace EngineSpace
 
 	Graphics::~Graphics()
 	{
+		BufferManager::FreeBuffers();
 
+		ReleaseCOM(m_fxWorldViewProj)
+		ReleaseCOM(m_tech)
+		ReleaseCOM(m_effect)
+				 
+				 
+		ReleaseCOM(swapChain)
+		ReleaseCOM(renderTargetView)
+		ReleaseCOM(depthStencilView)
+		ReleaseCOM(m_inputLayout)
+				
+		ReleaseCOM(lp_d3dDevice)
+		ReleaseCOM(lp_d3dContext)
+				  
 	}
 
 	void Graphics::Init()
@@ -30,14 +49,20 @@ namespace EngineSpace
 		HRESULT hr = D3D11CreateDevice(0, D3D_DRIVER_TYPE_HARDWARE, 0, D3D11_CREATE_DEVICE_DEBUG,&fl,1, D3D11_SDK_VERSION,
 										&lp_d3dDevice, &featureLevel, &lp_d3dContext);
 
+		const char* dname = "Graphics Context";
+		lp_d3dContext->SetPrivateData(WKPDID_D3DDebugObjectName,sizeof(dname) -1,(void*)dname);
+
+		const char* dname2 = "Graphics Device";
+		lp_d3dDevice->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(dname2) -1, (void*)dname2);
+
 		if (FAILED(hr))
 		{
-			MessageBox(gp_Core->GetHWND(), L"Device Creation Failed", L"Error", MB_OK);
+			MessageBox(gp_CoreH->GetHWND(), L"Device Creation Failed", L"Error", MB_OK);
 		}
 
 		if (featureLevel != D3D_FEATURE_LEVEL_11_0)
 		{
-			MessageBox(gp_Core->GetHWND(), L"Feature level DirectX 11 not supported", NULL, MB_OK);
+			MessageBox(gp_CoreH->GetHWND(), L"Feature level DirectX 11 not supported", NULL, MB_OK);
 		}
 
 		//Now we can use the newly acquired interface to do bunch of Direct3D stuff
@@ -61,7 +86,7 @@ namespace EngineSpace
 	
 		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		swapChainDesc.Flags = 0;
-		swapChainDesc.OutputWindow = gp_Core->GetHWND();
+		swapChainDesc.OutputWindow = gp_CoreH->GetHWND();
 		swapChainDesc.SampleDesc.Count = 8;
 		swapChainDesc.SampleDesc.Quality = aaCheck-1;
 		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
@@ -83,7 +108,7 @@ namespace EngineSpace
 	
 		dxgiFactory->CreateSwapChain(lp_d3dDevice, &swapChainDesc, &swapChain);
 
-		//Release all the acquired COM interface
+		//Release all the acquired COM interface , not needed anymore
 		dxgiDevice->Release();
 		dxgiAdapter->Release();
 		dxgiFactory->Release();
@@ -98,7 +123,7 @@ namespace EngineSpace
 		 hr = lp_d3dDevice->CreateRenderTargetView(backBuffer, 0, &renderTargetView);
 		if (FAILED(hr))
 		{
-			MessageBox(gp_Core->GetHWND(), L"Failed to create Render target view", L"OOOOPS", MB_OK);
+			MessageBox(gp_CoreH->GetHWND(), L"Failed to create Render target view", L"OOOOPS", MB_OK);
 		}
 		backBuffer->Release();
 
@@ -196,7 +221,7 @@ namespace EngineSpace
 		//Set Primitive Topology
 		lp_d3dContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 		//Draw
-		XMMATRIX worldViewProj = XMMatrixIdentity() * gp_Core->GetCamera()->GetXM_View() * gp_Core->GetCamera()->GetXM_Projection();
+		DirectX::XMMATRIX worldViewProj = DirectX::XMMatrixIdentity() * gp_MainCameraH->GetXM_View() * gp_MainCameraH->GetXM_Projection();
 		//Set Effect Variable
 		m_fxWorldViewProj->SetMatrix(reinterpret_cast<float*>(&worldViewProj));
 

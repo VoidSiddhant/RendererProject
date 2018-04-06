@@ -33,11 +33,11 @@ namespace EngineSpace
 		void SetFarPlane(const float fDistance);
 
 		//Getter Methods
-		XMMATRIX GetXM_Projection() const {
+		DirectX::XMMATRIX GetXM_Projection() const {
 			return XMLoadFloat4x4(&m_projection);
 		}
 
-		XMMATRIX GetXM_View() const {
+		DirectX::XMMATRIX GetXM_View() const {
 			return XMLoadFloat4x4(&m_view);
 		}
 

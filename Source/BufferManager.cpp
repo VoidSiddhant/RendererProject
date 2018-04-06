@@ -26,7 +26,7 @@ namespace EngineSpace
 		indexList.insert(indexList.end(), iBegin, iEnd);
 
 		//Change this call
-		BufferManager::BuildGeometryBuffer(gp_Core->GetGraphics()->GetDevice());
+		BufferManager::BuildGeometryBuffer(gp_RendererH->GetDevice());
 	}
 
 	void BufferManager::BuildGeometryBuffer(ID3D11Device* device)
@@ -71,6 +71,12 @@ namespace EngineSpace
 		UINT offset = 0;
 		deviceContext->IASetVertexBuffers(0,1,&m_vertexBuffer,&stride,&offset);
 		deviceContext->IASetIndexBuffer(m_indexBuffer,DXGI_FORMAT_R32_UINT,0);
+	}
+
+	void BufferManager::FreeBuffers()
+	{
+		ReleaseCOM(m_vertexBuffer);
+		ReleaseCOM(m_indexBuffer);
 	}
 };
 

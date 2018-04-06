@@ -51,6 +51,6 @@ namespace EngineSpace
 		std::wostringstream woss;
 		woss << L"FPS " << fps;
 	
-		SetWindowText(gp_Core->GetHWND(),woss.str().c_str());
+		SetWindowText(gp_CoreH->GetHWND(),woss.str().c_str());
 	}
 }

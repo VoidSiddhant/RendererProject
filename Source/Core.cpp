@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include"Core.h"
 #include"Input.h"
 
@@ -7,38 +8,43 @@
 
 #include"Timer.h"
 #include"Graphics.h"
-
+#include <memory>
 namespace EngineSpace
 {
 	//Constructor
 	Core::Core(LPCWSTR windowTitle, HINSTANCE hInstance)
 	{
-		m_graphics = 0;
-		m_input = 0;
-		m_camera = 0;
-		gp_Core = this;
+	
+		logFile = fopen("EngineStartupLog.txt", "w");
+		fputs("Core Init\n", logFile);
+		fclose(logFile);
+
+		gp_RendererH = 0;
+		gp_InputH = 0;
+		gp_MainCameraH = 0;
+//		gp_CoreH = this;
 		m_title = windowTitle;
 		m_hInstance = hInstance;
 	
 	}
 
+	//TODO : Smart Pointer for camera
 	void Core::Init()
 	{
 		this->InitWindow();
 		this->InitGraphics();
 
-		m_input = new Input();
+		gp_InputH = new Input();
 
 		//Start Timer
-		m_timer = new Timer();
-		//Set Up Default Camera
-		m_camera = new Camera(XMFLOAT3{ 0.0f,0.0f,-5.0f }, XMFLOAT3{ 0.0f,0.0f,0.0f }, XMFLOAT3{ 0.0f,1.0f,0.0f });
-		m_camera->UpdateView();
-		m_camera->UpdateProjection();
+		gp_MainTimerH = new Timer();
+		gp_MainCameraH->UpdateView();
+		gp_MainCameraH->UpdateProjection();
 
 		//Set Default render input layout and shaders
-		m_graphics->BuildFX();
-		m_graphics->CreateInputLayout();
+		gp_RendererH->BuildFX();
+		gp_RendererH->CreateInputLayout();
+		
 
 		Start();
 	}
@@ -70,8 +76,8 @@ namespace EngineSpace
 
 	void Core::InitGraphics()
 	{
-		m_graphics = new Graphics();
-		m_graphics->Init();
+		gp_RendererH = const_cast<Graphics*>(new Graphics());
+		gp_RendererH->Init();
 	}
 
 	int Core::Run()
@@ -97,7 +103,7 @@ namespace EngineSpace
 			else
 			{
 				//m_timer->FPS();
-				m_timer->Tick();
+				gp_MainTimerH->Tick();
 				Update();
 			}
 		}
@@ -109,19 +115,20 @@ namespace EngineSpace
 	void Core::Update()
 	{
 		// Check for User Input
-		if (m_input->GetKeyDown(VK_ESCAPE))
+		if (gp_InputH->GetKeyDown(VK_ESCAPE))
 		{
 			MessageBox(m_hwnd, L"Hello", L"Caption", MB_OK);
 			exitAppCondition = true;
 		}
 		//Call Application Update
-		Update(m_timer->GetDeltaTime());
+		Update(gp_MainTimerH->GetDeltaTime());
 		// Update all the draw calls
-		m_graphics->Draw();
+		gp_RendererH->Draw();
 	}
 
 	void Core::ShutDown()
 	{
+
 		// Remove Window Handler
 		DestroyWindow(m_hwnd);
 
@@ -131,7 +138,11 @@ namespace EngineSpace
 
 		//Release Pointer handler to the engine object
 		//delete gp_Core;
-		gp_Core = NULL;
+		delete gp_RendererH;
+		delete gp_MainTimerH;
+		delete gp_MainCameraH;
+		delete gp_InputH;
+
 	}
 
 	LRESULT CALLBACK Core::MessageHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -139,14 +150,13 @@ namespace EngineSpace
 		switch (msg)
 		{
 		case WM_KEYDOWN:
-			m_input->SetKeyDown(wParam);
+			gp_InputH->SetKeyDown(wParam);
 			break;
 		case WM_KEYUP:
-			m_input->SetKeyUp(wParam);
+			gp_InputH->SetKeyUp(wParam);
 			break;
-		default :
-			return DefWindowProc(hwnd, msg, wParam, lParam);
 		}
+		return DefWindowProc(hwnd, msg, wParam, lParam);
 	}
 
 	//Destructor
@@ -179,7 +189,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		// All other messages pass to the message handler in the system class.
 		default:
 		{
-			return EngineSpace::gp_Core->MessageHandler(hwnd, msg, wParam, lParam);
+			return EngineSpace::gp_CoreH->MessageHandler(hwnd, msg, wParam, lParam);
 		}
 	}
 }

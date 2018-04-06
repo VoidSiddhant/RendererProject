@@ -30,10 +30,9 @@ namespace EngineSpace
 	public:
 		ID3D11Device * lp_d3dDevice;
 		ID3D11DeviceContext* lp_d3dContext;
+		IDXGISwapChain* swapChain;
 		ID3D11RenderTargetView* renderTargetView;
 		ID3D11DepthStencilView* depthStencilView;
-		IDXGISwapChain* swapChain;
-
 		//Effect
 		LPD3D11EFFECT m_effect;
 		ID3DX11EffectTechnique* m_tech;

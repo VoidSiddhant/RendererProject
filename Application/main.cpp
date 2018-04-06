@@ -1,6 +1,7 @@
 #include "Core.h"
+#include "Camera.h"
 #include "PrimitiveGeometry.h"
-
+using namespace DirectX;
 class Application : public EngineSpace::Core
 {
 	public:
@@ -18,7 +19,7 @@ class Application : public EngineSpace::Core
 
 		void Update(float dt)
 		{
-
+			
 		}
 
 		virtual ~Application()
@@ -30,13 +31,14 @@ class Application : public EngineSpace::Core
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR pCmdLine, int nCmdShow)
 {
-	Application* app = new Application(L"BoxDemo", hInstance);
+	EngineSpace::gp_CoreH = new Application(L"BoxDemo", hInstance);
 
-	app->Init();
-	app->Run();
-	app->ShutDown();
+	EngineSpace::gp_MainCameraH = new EngineSpace::Camera(XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
+	EngineSpace::gp_CoreH->Init();
+	EngineSpace::gp_CoreH->Run();
+	EngineSpace::gp_CoreH->ShutDown();
 
-	delete app;
+	delete EngineSpace::gp_CoreH;
 	return 0;
 
 }

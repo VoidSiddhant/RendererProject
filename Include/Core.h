@@ -23,12 +23,13 @@ namespace EngineSpace
 		int Run();
 		void ShutDown();
 		void Update();
+		//Message Handler for this Application
+		LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
+		virtual ~Core();
 		//Startup Attachments
 		virtual void Start() = 0;
-
 		//Update Attachment
 		virtual void Update(float dt) = 0;
-
 
 		//Accessor methods
 		HWND GetHWND()  {
@@ -39,34 +40,17 @@ namespace EngineSpace
 			return m_hInstance;
 		}
 
-		Graphics* GetGraphics() const {
-			return m_graphics;
-		}
-		
-		Camera* GetCamera() const {
-			return m_camera;
-		}
-
-		//Message Handler for this Application
-		LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
-		~Core();
 
 	private :
-		//Methods
-		
+		//Init Methods		
 		void InitWindow();
 		void InitGraphics();
 
-	
 		//Variables
 		HWND m_hwnd;
 		HINSTANCE m_hInstance;
 		bool exitAppCondition;
-		Graphics* m_graphics;
-		Camera* m_camera;
-		Input* m_input;
 		LPCWSTR m_title;
-		Timer* m_timer;
 	};
 }
 //Highlighted text are linked/resolved

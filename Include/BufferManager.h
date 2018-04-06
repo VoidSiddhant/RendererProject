@@ -25,13 +25,15 @@ namespace EngineSpace
 			return (UINT)indexList.size();
 		}
 
-		static const ID3D11Buffer& VertexBuffer() {
-			return *m_vertexBuffer;
+		static ID3D11Buffer* VertexBuffer() {
+			return m_vertexBuffer;
 		}
 
-		static const ID3D11Buffer& IndexBuffer() {
-			return *m_indexBuffer;
+		static  ID3D11Buffer* IndexBuffer() {
+			return m_indexBuffer;
 		}
+
+		static void FreeBuffers();
 
 	private:
 		static ID3D11Buffer* m_vertexBuffer;

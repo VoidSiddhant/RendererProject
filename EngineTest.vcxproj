@@ -134,6 +134,7 @@
     <ClInclude Include="Include\Timer.h" />
     <ClInclude Include="Include\Util.h" />
     <ClInclude Include="Include\Vertex.h" />
+    <ClInclude Include="Include\Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\BufferManager.cpp" />
@@ -145,6 +146,7 @@
     <ClCompile Include="Application\main.cpp" />
     <ClCompile Include="Source\PrimitiveGeometry.cpp" />
     <ClCompile Include="Source\Timer.cpp" />
+    <ClCompile Include="Source\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="EngineFX\Color.fx">

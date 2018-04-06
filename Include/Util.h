@@ -2,6 +2,7 @@
 #define _UTIL_H
 
 #include<iostream>
+#include<fstream>
 #include<string>
 #include<vector>
 #include <d3d11.h>
@@ -14,7 +15,9 @@
 #define WIN32_LEAN_AND_MEAN
 #include<windows.h>
 
-using namespace DirectX;
+#define ReleaseCOM(x) { if(x){ x->Release(); x = 0; } }
+
+
 
 namespace EngineSpace
 {
@@ -29,8 +32,20 @@ namespace EngineSpace
 
 # define MATHF_PI	3.14159265358979323846f  /* pi */
 	
-	class Core;
+	_declspec(selectany) std::FILE* logFile;
 
-	_declspec(selectany) extern EngineSpace::Core* gp_Core = 0;
+	class Core;
+	class Camera;
+	class Input;
+	class Graphics;
+	class Timer;
+
+	
+	//TODO : Smart Pointers 
+	_declspec(selectany) extern Input* gp_InputH ;
+	_declspec(selectany) extern Graphics* gp_RendererH ;
+	_declspec(selectany) extern Timer* gp_MainTimerH ;
+	_declspec(selectany) extern Camera* gp_MainCameraH ;
+	_declspec(selectany) extern Core* gp_CoreH;
 }
 #endif // !_UTIL_H

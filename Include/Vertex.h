@@ -7,8 +7,8 @@ namespace EngineSpace
 {
 	struct Vertex_CPT
 	{
-		XMFLOAT3 position;
-		XMFLOAT4 color;
+		DirectX::XMFLOAT3 position;
+		DirectX::XMFLOAT4 color;
 	};
 }
 
