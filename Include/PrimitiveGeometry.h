@@ -6,14 +6,14 @@
 
 namespace EngineSpace
 {
-	class PrimitiveGeometry
+	class Shape
 	{
 	public:
-		PrimitiveGeometry();
-		~PrimitiveGeometry();
+		Shape();
+		~Shape();
 
-		static GameObject CreateBox();
-		static GameObject::Mesh CreateGrid();
+		static GameObject Box();
+		static GameObject CreateHills(float width, float depth, UINT m, UINT n);
 	
 	private:
 

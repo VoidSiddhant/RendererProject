@@ -33,7 +33,7 @@ namespace EngineSpace
 	{
 		D3D11_BUFFER_DESC vDesc;
 		vDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		vDesc.ByteWidth = sizeof(Vertex_CPT) *8;
+		vDesc.ByteWidth = sizeof(Vertex_CPT) * vertexList.size();
 		vDesc.CPUAccessFlags = 0;
 		vDesc.MiscFlags = 0;
 		vDesc.StructureByteStride = 0;
@@ -49,7 +49,7 @@ namespace EngineSpace
 
 		D3D11_BUFFER_DESC iDesc;
 		iDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		iDesc.ByteWidth = sizeof(UINT) * 36;
+		iDesc.ByteWidth = sizeof(UINT) * indexList.size();
 		iDesc.CPUAccessFlags = 0;
 		iDesc.MiscFlags = 0;
 		iDesc.StructureByteStride = 0;
@@ -75,8 +75,8 @@ namespace EngineSpace
 
 	void BufferManager::FreeBuffers()
 	{
-		ReleaseCOM(m_vertexBuffer);
-		ReleaseCOM(m_indexBuffer);
+		SG_UTIL_MEM_ReleaseCOM(m_vertexBuffer);
+		SG_UTIL_MEM_ReleaseCOM(m_indexBuffer);
 	}
 };
 

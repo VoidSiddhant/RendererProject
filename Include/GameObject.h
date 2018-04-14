@@ -2,11 +2,11 @@
 #define _GAMEOBJECT_H
 
 #include "Vertex.h"
-#include "Transform.h"
+#include "Renderer.h"
 
 namespace EngineSpace
 {
-	class GameObject : public Transform
+	class GameObject : public Renderer
 	{
 	public:
 		typedef struct MeshData
@@ -19,7 +19,6 @@ namespace EngineSpace
 		~GameObject();
 
 		Mesh mesh;
-
 	private:
 
 	};

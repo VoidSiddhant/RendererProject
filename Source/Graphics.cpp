@@ -3,15 +3,13 @@
 #include "Core.h"
 #include "BufferManager.h"
 #include "Camera.h"
+#include "RenderStates.h"
 
 
 namespace EngineSpace
 {
 	Graphics::Graphics()
 	{
-		logFile = std::fopen("EngineStartupLog.txt", "w");
-		std::fputs("Graphics Init\n", logFile);
-		std::fclose(logFile);
 
 		lp_d3dDevice = 0;
 		lp_d3dContext = 0;
@@ -22,21 +20,24 @@ namespace EngineSpace
 
 	Graphics::~Graphics()
 	{
-		BufferManager::FreeBuffers();
 
-		ReleaseCOM(m_fxWorldViewProj)
-		ReleaseCOM(m_tech)
-		ReleaseCOM(m_effect)
-				 
-				 
-		ReleaseCOM(swapChain)
-		ReleaseCOM(renderTargetView)
-		ReleaseCOM(depthStencilView)
-		ReleaseCOM(m_inputLayout)
+		BufferManager::FreeBuffers();
+		RenderStateManager::ReleaseMem();
+
+		SG_UTIL_MEM_ReleaseCOM(swapChain)
+		SG_UTIL_MEM_ReleaseCOM(renderTargetView)
+		SG_UTIL_MEM_ReleaseCOM(depthStencilView)
+
+			ID3D11Debug* debugDevice;
+		lp_d3dDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&debugDevice));
+		debugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+		SG_UTIL_MEM_ReleaseCOM(debugDevice);
+
 				
-		ReleaseCOM(lp_d3dDevice)
-		ReleaseCOM(lp_d3dContext)
-				  
+		SG_UTIL_MEM_ReleaseCOM(lp_d3dDevice)
+		SG_UTIL_MEM_ReleaseCOM(lp_d3dContext)
+
+	
 	}
 
 	void Graphics::Init()
@@ -77,8 +78,8 @@ namespace EngineSpace
 		swapChainDesc.BufferCount = 1;
 		
 		swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		swapChainDesc.BufferDesc.Height = SCREEN_HEIGHT;
-		swapChainDesc.BufferDesc.Width = SCREEN_WIDTH;
+		swapChainDesc.BufferDesc.Height = SG_UTIL_SCREEN_HEIGHT;
+		swapChainDesc.BufferDesc.Width = SG_UTIL_SCREEN_WIDTH;
 		swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
 		swapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
 		swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING::DXGI_MODE_SCALING_CENTERED;
@@ -123,7 +124,7 @@ namespace EngineSpace
 		 hr = lp_d3dDevice->CreateRenderTargetView(backBuffer, 0, &renderTargetView);
 		if (FAILED(hr))
 		{
-			MessageBox(gp_CoreH->GetHWND(), L"Failed to create Render target view", L"OOOOPS", MB_OK);
+			MessageBox(gp_CoreH->GetHWND(), L"Failed to create Render target view",NULL, MB_OK);
 		}
 		backBuffer->Release();
 
@@ -135,13 +136,13 @@ namespace EngineSpace
 		depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 		depthStencilDesc.CPUAccessFlags = 0;
 		depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		depthStencilDesc.Height = SCREEN_HEIGHT;
+		depthStencilDesc.Height = SG_UTIL_SCREEN_HEIGHT;
 		depthStencilDesc.MipLevels = 1;
 		depthStencilDesc.MiscFlags = 0;
 		depthStencilDesc.SampleDesc.Count = 8;
 		depthStencilDesc.SampleDesc.Quality = aaCheck-1;
 		depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
-		depthStencilDesc.Width = SCREEN_WIDTH;
+		depthStencilDesc.Width = SG_UTIL_SCREEN_WIDTH;
 		//Create the Depth/Stencil Buffer
 		ID3D11Texture2D* depthStencilBuffer;
 		lp_d3dDevice->CreateTexture2D(&depthStencilDesc, 0, &depthStencilBuffer);
@@ -158,52 +159,28 @@ namespace EngineSpace
 		D3D11_VIEWPORT vp;
 		vp.TopLeftX = 0.0f;
 		vp.TopLeftY = 0.0f;
-		vp.Width = static_cast<float>(SCREEN_WIDTH);
-		vp.Height = static_cast<float>(SCREEN_HEIGHT);
+		vp.Width = static_cast<float>(SG_UTIL_SCREEN_WIDTH);
+		vp.Height = static_cast<float>(SG_UTIL_SCREEN_HEIGHT);
 		vp.MinDepth = 0.0f;
 		vp.MaxDepth = 1.0f;
 
 		lp_d3dContext->RSSetViewports(1, &vp);
-	}
 
-	void Graphics::BuildFX()
-	{
-		UINT shaderFlags = 0;
-#if defined(DEBUG) ||defined(_DEBUG)
-		shaderFlags = D3D10_SHADER_DEBUG | D3D10_SHADER_SKIP_OPTIMIZATION;
-#endif
-	
-		HRESULT hr = D3DX11CreateEffectFromFile(L"x64/Debug/Color.cso", shaderFlags, lp_d3dDevice, &m_effect);
-
-		m_tech = m_effect->GetTechniqueByName("ColorTech");
-		
-		m_fxWorldViewProj = m_effect->GetVariableByName("gWorldViewProj")->AsMatrix();
-		
-	}
-
-	void Graphics::CreateInputLayout()
-	{
-		//Set Input Element structure Description (vertex structure used for rendering)
-		D3D11_INPUT_ELEMENT_DESC inputDesc[] = 
-		{
-			{"POSITION",0,DXGI_FORMAT_R32G32B32A32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0},
-			{"COLOR",0,DXGI_FORMAT_R32G32B32A32_FLOAT,0,12,D3D11_INPUT_PER_VERTEX_DATA,0}
+		//Load Shader
+		std::vector<std::string> cbuffer_list = {
+			"gWorldViewProj",
 		};
-
-		//Get Pass Description for InputSignature
-		D3DX11_PASS_DESC passDesc;
-		m_tech->GetPassByIndex(0)->GetDesc(&passDesc);
-		lp_d3dDevice->CreateInputLayout(inputDesc, 2, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &m_inputLayout);
-
+		//Set Default render input layout and shaders
+		PShader shader = new Shader(SHADER_COLOR, "ColorTech", 1, cbuffer_list);
+		//Set Up Render State manager
+		RenderStateManager::BuildShader(shader);
+		RenderStateManager::CreateInputLayout(InputLayoutType::POS_COLOR);
 	}
 
-	void Graphics::SetInputLayout(const ID3D11InputLayout* input)
-	{
-		lp_d3dContext->IASetInputLayout(const_cast<ID3D11InputLayout*>(input));
-	}
 
 	void Graphics::Draw()
 	{
+	
 		float color[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		//Clear the back buffer
 		lp_d3dContext->ClearRenderTargetView(renderTargetView,(const float*) color);
@@ -217,24 +194,16 @@ namespace EngineSpace
 			BufferManager::IASetBuffers(lp_d3dContext);
 
 		//Set input layout
-		lp_d3dContext->IASetInputLayout(m_inputLayout);
+		RenderStateManager::SetInputLayout(InputLayoutType::POS_COLOR);
 		//Set Primitive Topology
 		lp_d3dContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 		//Draw
-		DirectX::XMMATRIX worldViewProj = DirectX::XMMatrixIdentity() * gp_MainCameraH->GetXM_View() * gp_MainCameraH->GetXM_Projection();
-		//Set Effect Variable
-		m_fxWorldViewProj->SetMatrix(reinterpret_cast<float*>(&worldViewProj));
-
-		D3DX11_TECHNIQUE_DESC techDesc;
-		m_tech->GetDesc(&techDesc);
-		for (UINT p = 0; p < techDesc.Passes; p++)
+		int i = 0;
+		while (i < RenderStateManager::m_render_list.size())
 		{
-			m_tech->GetPassByIndex(0)->Apply(0, lp_d3dContext);
-		
-			//Geometery Index Count
-			lp_d3dContext->DrawIndexed(BufferManager::GetIndexCount(), 0,0);
+			RenderStateManager::m_render_list[i]->Draw();
+			i++;
 		}
-		
 		//Swap the Back and front buffers
 		swapChain->Present(0, 0);
 	}

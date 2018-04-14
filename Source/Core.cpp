@@ -8,17 +8,12 @@
 
 #include"Timer.h"
 #include"Graphics.h"
-#include <memory>
 namespace EngineSpace
 {
 	//Constructor
 	Core::Core(LPCWSTR windowTitle, HINSTANCE hInstance)
 	{
 	
-		logFile = fopen("EngineStartupLog.txt", "w");
-		fputs("Core Init\n", logFile);
-		fclose(logFile);
-
 		gp_RendererH = 0;
 		gp_InputH = 0;
 		gp_MainCameraH = 0;
@@ -34,18 +29,14 @@ namespace EngineSpace
 		this->InitWindow();
 		this->InitGraphics();
 
-		gp_InputH = new Input();
+		gp_InputH.reset(new Input());
 
 		//Start Timer
-		gp_MainTimerH = new Timer();
+		gp_MainTimerH.reset(new Timer());
 		gp_MainCameraH->UpdateView();
 		gp_MainCameraH->UpdateProjection();
 
-		//Set Default render input layout and shaders
-		gp_RendererH->BuildFX();
-		gp_RendererH->CreateInputLayout();
-		
-
+		//Call Derived Start
 		Start();
 	}
 
@@ -65,7 +56,7 @@ namespace EngineSpace
 
 		RegisterClass(&wc);
 
-		m_hwnd = CreateWindow(m_title, m_title, WS_OVERLAPPEDWINDOW, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, m_hInstance, NULL);
+		m_hwnd = CreateWindow(m_title, m_title, WS_OVERLAPPEDWINDOW, 0, 0, SG_UTIL_SCREEN_WIDTH, SG_UTIL_SCREEN_HEIGHT, 0, 0, m_hInstance, NULL);
 		if (!m_hwnd)
 		{
 			MessageBox(m_hwnd, L"Window Could Not Be Created", L"Error!!!", MB_OK);
@@ -76,15 +67,13 @@ namespace EngineSpace
 
 	void Core::InitGraphics()
 	{
-		gp_RendererH = const_cast<Graphics*>(new Graphics());
+		gp_RendererH.reset(new Graphics());
 		gp_RendererH->Init();
 	}
 
 	int Core::Run()
 	{
 		MSG msg;
-
-		//Initialise the msg structure
 		ZeroMemory(&msg, sizeof(MSG));
 
 		while (!exitAppCondition)
@@ -102,7 +91,7 @@ namespace EngineSpace
 
 			else
 			{
-				//m_timer->FPS();
+	
 				gp_MainTimerH->Tick();
 				Update();
 			}
@@ -114,46 +103,45 @@ namespace EngineSpace
 
 	void Core::Update()
 	{
-		// Check for User Input
 		if (gp_InputH->GetKeyDown(VK_ESCAPE))
 		{
 			MessageBox(m_hwnd, L"Hello", L"Caption", MB_OK);
 			exitAppCondition = true;
 		}
-		//Call Application Update
 		Update(gp_MainTimerH->GetDeltaTime());
-		// Update all the draw calls
+
+		gp_MainCameraH->UpdateProjection();
+		gp_MainCameraH->UpdateView();
 		gp_RendererH->Draw();
 	}
 
 	void Core::ShutDown()
 	{
 
-		// Remove Window Handler
+
 		DestroyWindow(m_hwnd);
 
-		// Remove the App instance
 		UnregisterClass(m_title, m_hInstance);
 		m_hInstance = NULL;
 
-		//Release Pointer handler to the engine object
-		//delete gp_Core;
-		delete gp_RendererH;
-		delete gp_MainTimerH;
-		delete gp_MainCameraH;
-		delete gp_InputH;
+		//Other Engine Objects
+		gp_RendererH.reset();
+		 gp_MainTimerH.reset();
+		 gp_MainCameraH.reset();
+		 gp_InputH.reset();
 
 	}
 
 	LRESULT CALLBACK Core::MessageHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
+	
 		switch (msg)
 		{
 		case WM_KEYDOWN:
-			gp_InputH->SetKeyDown(wParam);
+			gp_InputH->SetKeyDown((UINT)wParam);
 			break;
 		case WM_KEYUP:
-			gp_InputH->SetKeyUp(wParam);
+			gp_InputH->SetKeyUp((UINT)wParam);
 			break;
 		}
 		return DefWindowProc(hwnd, msg, wParam, lParam);

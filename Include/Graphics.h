@@ -3,7 +3,6 @@
 
 #include "Util.h"
 
-
 //Graphics Stub................................
 namespace EngineSpace
 {
@@ -13,11 +12,8 @@ namespace EngineSpace
 		Graphics();
 		~Graphics();
 		void Init();
+
 		void Draw();
-		
-		void BuildFX();
-		void CreateInputLayout();
-		void SetInputLayout(const ID3D11InputLayout* input);
 
 		ID3D11Device* GetDevice() const {
 			return lp_d3dDevice;
@@ -33,12 +29,6 @@ namespace EngineSpace
 		IDXGISwapChain* swapChain;
 		ID3D11RenderTargetView* renderTargetView;
 		ID3D11DepthStencilView* depthStencilView;
-		//Effect
-		LPD3D11EFFECT m_effect;
-		ID3DX11EffectTechnique* m_tech;
-		ID3DX11EffectMatrixVariable* m_fxWorldViewProj;
-		ID3D11InputLayout* m_inputLayout;
-		
 	};
 
 }
