@@ -3,7 +3,7 @@
 #include "Core.h"
 #include "BufferManager.h"
 #include "Camera.h"
-#include "RenderStates.h"
+#include "RenderStateManager.h"
 
 
 namespace EngineSpace
@@ -170,11 +170,11 @@ namespace EngineSpace
 		std::vector<std::string> cbuffer_list = {
 			"gWorldViewProj",
 		};
-		//Set Default render input layout and shaders
+
 		PShader shader = new Shader(SHADER_COLOR, "ColorTech", 1, cbuffer_list);
 		//Set Up Render State manager
 		RenderStateManager::BuildShader(shader);
-		RenderStateManager::CreateInputLayout(InputLayoutType::POS_COLOR);
+		RenderStateManager::BuildInputLayouts(InputLayoutType::POS_COLOR,NULL);
 	}
 
 

@@ -1,15 +1,15 @@
 #ifndef _RENDER_STATES_H
 #define _RENDER_STATES_H
-#include"Util.h"
 #include <map>
 #include "Shader.h"
 #include "GameObject.h"
 namespace EngineSpace
 {
+
 	enum InputLayoutType
 	{
-		POS_COLOR,
-		POS_COLOR_TEXTURE
+		POS_COLOR = 0x01,
+		POS_COLOR_TEXTURE = 0x02
 	};
 
 	class RenderStateManager
@@ -23,7 +23,7 @@ namespace EngineSpace
 		//Shader related
 		static void BuildShader(Shader* shader);
 		//Create device related states
-		static void CreateInputLayout(const InputLayoutType& type);
+		static void BuildInputLayouts(const InputLayoutType type,...);
 		static void SetInputLayout(const InputLayoutType& type);
 		static void AddToRenderObjectList(GameObject* object);
 		

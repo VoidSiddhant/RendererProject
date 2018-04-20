@@ -91,9 +91,10 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/std:c++latest %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Effects11d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Effects11d.lib;d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ShaderType>Effect</ShaderType>
@@ -147,15 +148,17 @@
     <ClInclude Include="Include\Graphics.h" />
     <ClInclude Include="Include\Input.h" />
     <ClInclude Include="Include\PrimitiveGeometry.h" />
-    <ClInclude Include="Include\RenderStates.h" />
+    <ClInclude Include="Include\RenderStateManager.h" />
     <ClInclude Include="Include\Shader.h" />
     <ClInclude Include="Include\Timer.h" />
     <ClInclude Include="Include\Util.h" />
     <ClInclude Include="Include\Vertex.h" />
     <ClInclude Include="Include\Transform.h" />
     <ClInclude Include="Include\Renderer.h" />
+    <ClInclude Include="Include\Logger.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Logger.cpp" />
     <ClCompile Include="Source\Renderer.cpp" />
     <ClCompile Include="Source\BufferManager.cpp" />
     <ClCompile Include="Source\Camera.cpp" />

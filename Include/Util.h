@@ -16,10 +16,6 @@
 #define WIN32_LEAN_AND_MEAN
 #include<windows.h>
 
-#define SG_UTIL_MEM_ReleaseCOM(x) { if(x){ x->Release(); x = 0; } }
-
-
-
 #include "Graphics.h"
 #include "Core.h" 
 #include "Timer.h"
@@ -39,11 +35,11 @@ namespace EngineSpace
 
 //Safe Release
 #define SG_UTIL_MEM_FREE(x) {if(x) { delete x; x = 0;}}
-
+#define SG_UTIL_MEM_ReleaseCOM(x) { if(x){ x->Release(); x = 0; } }
 
 //Height Funtion
-#define SG_UTIL_Math_RFGetHeight(x,z) 0.3f*( z*sinf(0.1f*x) + x*cosf(0.1f*z) )
-# define SG_UTIL_MATH_RF_PI	3.14159265358979323846f  /* pi */
+#define SG_UTIL_Math_RFGetHeight(x,z)	0.3f*( z*sinf(0.1f*x) + x*cosf(0.1f*z) )
+#define SG_UTIL_MATH_RF_PI	3.14159265358979323846f  /* pi */
 
 	class Core;
 	class Camera;

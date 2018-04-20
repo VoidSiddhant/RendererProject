@@ -142,7 +142,7 @@ namespace EngineSpace
 		float x = -XMVectorGetX(XMVector3Dot(P, R));
 		float y = -XMVectorGetX(XMVector3Dot(P, U));
 		float z = -XMVectorGetX(XMVector3Dot(P, L));
-
+	
 		XMStoreFloat3(&m_right, R);
 		XMStoreFloat3(&m_up, U);
 		XMStoreFloat3(&m_target, L);

@@ -1,0 +1,13 @@
+04/20/18 M/D/Y	17:12:38
+
+
+17:12:38	Building Shader
+17:12:38	Shader Built04/20/18 M/D/Y	17:12:38
+
+
+17:12:38	Building FX from shader object †è2(;
+17:12:38	Building FX from shader object †è2(; complete04/20/18 M/D/Y	17:12:38
+
+
+17:12:38	Building InputLayout of type : 1
+17:12:38	Successfully Built InputLayout of type : 1

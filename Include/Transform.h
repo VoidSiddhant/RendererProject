@@ -18,21 +18,21 @@ namespace EngineSpace
 		virtual void SetScale(const DirectX::XMFLOAT3& scaleVector);
 
 		DirectX::XMMATRIX GetXM_Translation() const{
-			return m_matrix_translation;
+			return XMLoadFloat4x4(&m_matrix_translation);
 		}
 
 		DirectX::XMMATRIX GetXM_Scalar() const 
 		{
-			return m_matrix_scalar;
+			return XMLoadFloat4x4(&m_matrix_scalar);
 		}
 
 		DirectX::XMMATRIX GetXM_Rotation() const
 		{
-			return m_matrix_rotation;
+			return DirectX::XMLoadFloat4x4(&m_matrix_rotation);
 		}
 		DirectX::XMMATRIX GetXM_WorldTransform() const
 		{
-			return m_matrix_scalar * m_matrix_rotation * m_matrix_translation;
+			return  DirectX::XMLoadFloat4x4(&m_matrix_rotation) * DirectX::XMLoadFloat4x4(&m_matrix_scalar)  * XMLoadFloat4x4(&m_matrix_translation);
 		}
 
 		DirectX::XMFLOAT3 m_position;
@@ -40,9 +40,9 @@ namespace EngineSpace
 		DirectX::XMFLOAT3 m_scale;
 
 	private:
-		DirectX::XMMATRIX m_matrix_translation;
-		DirectX::XMMATRIX m_matrix_rotation;
-		DirectX::XMMATRIX m_matrix_scalar;
+		DirectX::XMFLOAT4X4 m_matrix_translation;
+		DirectX::XMFLOAT4X4 m_matrix_rotation;
+		DirectX::XMFLOAT4X4 m_matrix_scalar;
 
 	};
 };

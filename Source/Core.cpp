@@ -91,8 +91,6 @@ namespace EngineSpace
 
 			else
 			{
-	
-				gp_MainTimerH->Tick();
 				Update();
 			}
 		}
@@ -108,8 +106,9 @@ namespace EngineSpace
 			MessageBox(m_hwnd, L"Hello", L"Caption", MB_OK);
 			exitAppCondition = true;
 		}
-		Update(gp_MainTimerH->GetDeltaTime());
 
+		gp_MainTimerH->Tick();
+		Update(gp_MainTimerH->GetDeltaTime());
 		gp_MainCameraH->UpdateProjection();
 		gp_MainCameraH->UpdateView();
 		gp_RendererH->Draw();

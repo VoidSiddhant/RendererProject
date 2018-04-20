@@ -21,14 +21,14 @@ namespace EngineSpace
 
 		//Fill Unity Length Cube
 		object.mesh.vertexData = {
-		{ DirectX::XMFLOAT3(-0.5f,-0.5f,-0.5f) ,DirectX::XMFLOAT4(1.0f,1.0f,1.0f,1.0f) },
-		{ DirectX::XMFLOAT3(-0.5f,0.5f,-0.5f) ,DirectX::XMFLOAT4(1.0f,1.0f,1.0f,1.0f) },
-		{ DirectX::XMFLOAT3(0.5f,0.5f,-0.5f) ,DirectX::XMFLOAT4(1.0f,1.0f,1.0f,1.0f) },
-		{ DirectX::XMFLOAT3(0.5f,-0.5f,-0.5f) ,DirectX::XMFLOAT4(1.0f,1.0f,1.0f,1.0f) },
-		{ DirectX::XMFLOAT3(-0.5f,-0.5f,0.5f) ,DirectX::XMFLOAT4(1.0f,1.0f,1.0f,1.0f) },
-		{ DirectX::XMFLOAT3(-0.5f,0.5f,0.5f) ,DirectX::XMFLOAT4(1.0f,1.0f,1.0f,1.0f) },
-		{ DirectX::XMFLOAT3(0.5f,0.5f,0.5f) ,DirectX::XMFLOAT4(1.0f,1.0f,1.0f,1.0f) },
-		{ DirectX::XMFLOAT3(0.5f,-0.5f,0.5f) ,DirectX::XMFLOAT4(1.0f,1.0f,1.0f,1.0f) },
+		{ DirectX::XMFLOAT3(-0.5f,-0.5f,-0.5f) ,DirectX::XMFLOAT4(1.0f,0.0f,0.0f,1.0f) },
+		{ DirectX::XMFLOAT3(-0.5f,0.5f,-0.5f) ,DirectX::XMFLOAT4(0.0f,1.0f,1.0f,1.0f) },
+		{ DirectX::XMFLOAT3(0.5f,0.5f,-0.5f) ,DirectX::XMFLOAT4(1.0f,0.0f,1.0f,1.0f) },
+		{ DirectX::XMFLOAT3(0.5f,-0.5f,-0.5f) ,DirectX::XMFLOAT4(0.0f,1.0f,1.0f,0.0f) },
+		{ DirectX::XMFLOAT3(-0.5f,-0.5f,0.5f) ,DirectX::XMFLOAT4(1.0f,1.0f,0.0f,1.0f) },
+		{ DirectX::XMFLOAT3(-0.5f,0.5f,0.5f) ,DirectX::XMFLOAT4(1.0f,1.0f,0.0f,1.0f) },
+		{ DirectX::XMFLOAT3(0.5f,0.5f,0.5f) ,DirectX::XMFLOAT4(1.0f,0.0f,1.0f,1.0f) },
+		{ DirectX::XMFLOAT3(0.5f,-0.5f,0.5f) ,DirectX::XMFLOAT4(0.0f,1.0f,1.0f,1.0f) },
 		};
 
 		//Set Up Indices
